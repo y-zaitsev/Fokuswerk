@@ -2,35 +2,123 @@
 
 **Find your flow. Own your focus.**
 
-Mindrift ist eine moderne, minimalistische Desktop-Anwendung zur Steigerung der Produktivität, entwickelt mit Python. Sie vereint Aufgabenverwaltung, Fokus-Sitzungen, persönliche Notizen und Produktivitätsübersichten in einem übersichtlichen und ablenkungsfreien Arbeitsbereich.
+Mindrift ist eine minimalistische Desktop-Anwendung zur Produktivitätssteigerung, entwickelt mit Python. Sie hilft dir dabei, Aufgaben zu organisieren, konzentrierte Arbeitssitzungen zu verwalten, Notizen zu speichern und deine Produktivität zu verfolgen – alles in einer übersichtlichen Oberfläche.
 
-Mit seinem eleganten Dark-Mode-Design und einer klaren Benutzeroberfläche hilft dir Mindrift dabei, organisiert zu bleiben, deine Zeit effizient zu nutzen und bessere Produktivitätsgewohnheiten zu entwickeln.
+## Funktionen
 
-### Funktionen
+- **Dashboard** – Behalte deine Produktivität im Überblick.
+- **Aufgabenverwaltung** – Erstelle, erledige und lösche Aufgaben.
+- **Pomodoro-Timer** – Konzentrierte Arbeitssitzungen sowie kurze und lange Pausen.
+- **Notizen** – Erstelle, bearbeite und verwalte deine persönlichen Notizen.
+- **Statistiken** – Verfolge erledigte Aufgaben und deine gesamte Fokuszeit.
+- **Einstellungen** – Passe die Timer-Dauer und das Erscheinungsbild an.
+- **Lokale Datenbank** – Speichere Aufgaben, Notizen, Sitzungen und Einstellungen mit SQLite.
+- **Dark UI** – Minimalistisches Design mit Fokus auf Übersichtlichkeit.
 
-- **Dashboard** — Behalte deine tägliche Produktivität und deinen Fortschritt im Blick.
-- **Aufgabenverwaltung** — Erstelle, organisiere, priorisiere und verwalte deine Aufgaben.
-- **Pomodoro-Timer** — Konzentriere dich mit individuell anpassbaren Arbeits- und Pausenphasen.
-- **Statistiken** — Visualisiere deine Produktivität und verfolge deine Fortschritte.
-- **Notizen** — Sammle und organisiere deine Gedanken und Ideen.
-- **Dark Mode** — Arbeite in einer modernen, minimalistischen und augenschonenden Benutzeroberfläche.
-
-### Technologien
+## Verwendete Technologien
 
 - Python
 - CustomTkinter
 - SQLite
 - Matplotlib
 - Pillow
+- PyInstaller
 
-### Ziel des Projekts
+## Projektstruktur
 
-Mindrift soll einen leichtgewichtigen, modernen und praktischen Produktivitätsbereich bieten, der dabei hilft, den Alltag besser zu organisieren und konzentriert zu arbeiten.
+```text
+Mindrift/
+│
+├── main.py
+├── config.py
+├── database.py
+├── requirements.txt
+├── build_exe.bat
+│
+├── data/
+│
+└── ui/
+    ├── __init__.py
+    ├── sidebar.py
+    ├── dashboard.py
+    ├── tasks.py
+    ├── timer.py
+    ├── notes.py
+    ├── statistics.py
+    └── settings.py
+```
 
-### Entwicklungsstatus
+## Installation und Start
 
-Mindrift befindet sich derzeit in aktiver Entwicklung. Neue Funktionen, Verbesserungen und Designoptimierungen werden schrittweise hinzugefügt.
+### Voraussetzungen
+
+- Python 3.11 oder neuer
+- pip
+
+### Installation
+
+1. Repository klonen:
+
+```bash
+git clone https://github.com/DEIN-BENUTZERNAME/mindrift.git
+```
+
+2. In das Projektverzeichnis wechseln:
+
+```bash
+cd mindrift
+```
+
+3. Abhängigkeiten installieren:
+
+```bash
+py -m pip install -r requirements.txt
+```
+
+4. Mindrift starten:
+
+```bash
+py main.py
+```
+
+## Datenspeicherung
+
+Mindrift verwendet SQLite zur lokalen Speicherung deiner Daten.
+
+Gespeichert werden:
+
+- Aufgaben und deren Status
+- Persönliche Notizen
+- Fokus-Sitzungen
+- Anwendungseinstellungen
+
+Alle Daten werden lokal gespeichert. Ein Online-Konto ist nicht erforderlich.
+
+## Windows-Version erstellen
+
+Mit PyInstaller kann Mindrift als eigenständige Windows-Anwendung erstellt werden.
+
+Führe dazu folgende Datei aus:
+
+```bash
+build_exe.bat
+```
+
+Die fertige EXE-Datei wird im Verzeichnis `dist/` erstellt.
+
+## Roadmap
+
+- [x] Grundstruktur der Desktop-Anwendung
+- [x] SQLite-Datenbankintegration
+- [x] Aufgabenverwaltung
+- [x] Pomodoro-Timer
+- [x] Notizenverwaltung
+- [x] Produktivitätsstatistiken
+- [x] Anwendungseinstellungen
+- [ ] Erweiterte Dashboard-Analysen
+- [ ] Verbesserte Diagramme und Visualisierungen
+- [ ] Weitere Anpassungsmöglichkeiten
 
 ---
 
-**Mindrift — Find your flow. Own your focus.**
+**Mindrift – Find your flow. Own your focus.**
