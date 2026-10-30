@@ -1,49 +1,133 @@
+
 import customtkinter as ctk
-from config import APP_NAME, WINDOW_SIZE, MIN_WINDOW_SIZE, COLORS
+
+from config import APP_NAME, COLORS
+from database import Database
+
 from ui.sidebar import Sidebar
 from ui.dashboard import Dashboard
-from ui.placeholder import PlaceholderPage
+from ui.tasks import TasksPage
+from ui.timer import TimerPage
+from ui.notes import NotesPage
+from ui.statistics import StatisticsPage
+from ui.settings import SettingsPage
 
-ctk.set_appearance_mode("dark")
-ctk.set_default_color_theme("dark-blue")
 
+class MindriftApp(ctk.CTk):
 
-class FocusDeskApp(ctk.CTk):
     def __init__(self):
         super().__init__()
+
+        self.db = Database()
+
         self.title(APP_NAME)
-        self.geometry(WINDOW_SIZE)
-        self.minsize(*MIN_WINDOW_SIZE)
+        self.geometry("1200x750")
+        self.minsize(950, 600)
+
         self.configure(fg_color=COLORS["background"])
 
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=1)
 
-        self.content = ctk.CTkFrame(self, fg_color=COLORS["background"], corner_radius=0)
-        self.content.grid(row=0, column=1, sticky="nsew")
-        self.content.grid_rowconfigure(0, weight=1)
-        self.content.grid_columnconfigure(0, weight=1)
+        self.content = ctk.CTkFrame(
+            self,
+            fg_color=COLORS["background"],
+            corner_radius=0
+        )
 
-        self.sidebar = Sidebar(self, on_navigate=self.show_page)
-        self.sidebar.grid(row=0, column=0, sticky="ns")
+        self.content.grid(
+            row=0,
+            column=1,
+            sticky="nsew"
+        )
+
+        self.content.grid_columnconfigure(0, weight=1)
+        self.content.grid_rowconfigure(0, weight=1)
+
+        self.sidebar = Sidebar(
+            self,
+            on_navigate=self.show_page
+        )
+
+        self.sidebar.grid(
+            row=0,
+            column=0,
+            sticky="ns"
+        )
 
         self.pages = {
-            "Dashboard": Dashboard(self.content),
-            "Tasks": PlaceholderPage(self.content, "Tasks", "Your tasks will live here."),
-            "Focus Timer": PlaceholderPage(self.content, "Focus Timer", "A focused session starts here."),
-            "Statistics": PlaceholderPage(self.content, "Statistics", "Your productivity insights will appear here."),
-            "Notes": PlaceholderPage(self.content, "Notes", "A quiet space for your thoughts."),
-            "Settings": PlaceholderPage(self.content, "Settings", "Make FocusDesk work your way."),
+            "Dashboard": Dashboard(
+                self.content,
+                self.db,
+                lambda: self.show_page("Focus Timer")
+            ),
+
+            "Tasks": TasksPage(
+                self.content,
+                self.db
+            ),
+
+            "Focus Timer": TimerPage(
+                self.content,
+                self.db
+            ),
+
+            "Statistics": StatisticsPage(
+                self.content,
+                self.db
+            ),
+
+            "Notes": NotesPage(
+                self.content,
+                self.db
+            ),
+
+            "Settings": SettingsPage(
+                self.content,
+                self.db,
+                self
+            )
         }
+
         self.show_page("Dashboard")
 
-    def show_page(self, page_name: str):
+        self.protocol(
+            "WM_DELETE_WINDOW",
+            self.on_close
+        )
+
+    def show_page(self, page_name):
+
         for page in self.pages.values():
             page.grid_forget()
-        self.pages[page_name].grid(row=0, column=0, sticky="nsew")
+
+        page = self.pages[page_name]
+
+        page.grid(
+            row=0,
+            column=0,
+            sticky="nsew"
+        )
+
+        if hasattr(page, "on_show"):
+            page.on_show()
+
+        if hasattr(page, "refresh"):
+            page.refresh()
+
         self.sidebar.set_active(page_name)
+
+    def on_close(self):
+
+        timer = self.pages.get("Focus Timer")
+
+        if timer and timer.after_id:
+            timer.after_cancel(timer.after_id)
+
+        self.destroy()
 
 
 if __name__ == "__main__":
-    app = FocusDeskApp()
+
+    app = MindriftApp()
     app.mainloop()

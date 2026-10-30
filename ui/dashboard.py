@@ -3,8 +3,10 @@ import customtkinter as ctk
 from config import COLORS
 
 class Dashboard(ctk.CTkFrame):
-    def __init__(self, master):
+    def __init__(self, master, db=None, on_start_focus=None):
         super().__init__(master, fg_color=COLORS["background"], corner_radius=0)
+        self.db = db
+        self.on_start_focus = on_start_focus
         self.pack_propagate(False)
         self.grid_columnconfigure((0, 1, 2, 3), weight=1, uniform="cards")
         self.grid_rowconfigure(3, weight=1)
