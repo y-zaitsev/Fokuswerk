@@ -23,6 +23,7 @@ class Database:
         connection.execute("PRAGMA foreign_keys = ON")
         return connection
 
+    
     def initialize(self) -> None:
         """Create all application tables if they do not exist yet."""
         with self._connect() as conn:
@@ -65,6 +66,32 @@ class Database:
                 );
                 """
             )
+
+            # Migration: add seconds column to existing databases
+            columns = [
+                row["name"]
+                for row in conn.execute(
+                    "PRAGMA table_info(focus_sessions)"
+                ).fetchall()
+            ]
+
+            if "duration_seconds" not in columns:
+                conn.execute(
+                    """
+                    ALTER TABLE focus_sessions
+                    ADD COLUMN duration_seconds INTEGER NOT NULL DEFAULT 0
+                    """
+                )
+
+            # Preserve the duration of older sessions
+            conn.execute(
+                """
+                UPDATE focus_sessions
+                SET duration_seconds = duration_minutes * 60
+                WHERE duration_seconds = 0
+                """
+            )
+
 
     # Tasks
     def add_task(
@@ -147,6 +174,7 @@ class Database:
         with self._connect() as conn:
             conn.execute("DELETE FROM notes WHERE id = ?", (note_id,))
 
+    
     # Focus sessions
     def add_focus_session(
         self,
@@ -156,21 +184,84 @@ class Database:
     ) -> int:
         if duration_minutes <= 0:
             raise ValueError("Duration must be greater than zero.")
+
         with self._connect() as conn:
             cursor = conn.execute(
-                """INSERT INTO focus_sessions
-                   (duration_minutes, session_type, completed)
-                   VALUES (?, ?, ?)""",
-                (duration_minutes, session_type, int(completed)),
+                """
+                INSERT INTO focus_sessions
+                (duration_minutes, duration_seconds, session_type, completed)
+                VALUES (?, ?, ?, ?)
+                """,
+                (
+                    duration_minutes,
+                    duration_minutes * 60,
+                    session_type,
+                    int(completed),
+                ),
             )
             return int(cursor.lastrowid)
+
+    def save_focus_session(
+        self,
+        session_id: int | None,
+        duration_seconds: int,
+        session_type: str = "focus",
+        completed: bool = False,
+    ) -> int | None:
+        duration_seconds = max(0, int(duration_seconds))
+
+        if duration_seconds == 0:
+            return session_id
+
+        duration_minutes = max(1, duration_seconds // 60)
+
+        with self._connect() as conn:
+            if session_id is None:
+                cursor = conn.execute(
+                    """
+                    INSERT INTO focus_sessions
+                    (duration_minutes, duration_seconds, session_type, completed)
+                    VALUES (?, ?, ?, ?)
+                    """,
+                    (
+                        duration_minutes,
+                        duration_seconds,
+                        session_type,
+                        int(completed),
+                    ),
+                )
+                return int(cursor.lastrowid)
+
+            conn.execute(
+                """
+                UPDATE focus_sessions
+                SET duration_minutes = ?,
+                    duration_seconds = ?,
+                    session_type = ?,
+                    completed = ?
+                WHERE id = ?
+                """,
+                (
+                    duration_minutes,
+                    duration_seconds,
+                    session_type,
+                    int(completed),
+                    session_id,
+                ),
+            )
+            return session_id
 
     def get_focus_sessions(self) -> list[dict[str, Any]]:
         with self._connect() as conn:
             rows = conn.execute(
-                "SELECT * FROM focus_sessions ORDER BY started_at DESC, id DESC"
+                """
+                SELECT * FROM focus_sessions
+                ORDER BY started_at DESC, id DESC
+                """
             ).fetchall()
+
             return [dict(row) for row in rows]
+
 
     # Settings
     def set_setting(self, key: str, value: str) -> None:
