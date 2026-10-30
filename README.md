@@ -2,40 +2,72 @@
 
 **Find your flow. Own your focus.**
 
-Mindrift ist eine minimalistische Desktop-Anwendung zur Produktivitätssteigerung, entwickelt mit Python. Sie hilft dir dabei, Aufgaben zu organisieren, konzentrierte Arbeitssitzungen zu verwalten, Notizen zu speichern und deine Produktivität zu verfolgen – alles in einer übersichtlichen Oberfläche.
+Mindrift ist eine Desktop-Produktivitätsanwendung, die mit Python entwickelt wurde. Sie hilft dabei, Aufgaben zu organisieren, konzentrierte Arbeitsphasen zu verwalten, Notizen zu erstellen und die eigene Produktivität im Blick zu behalten.
+
+Die Anwendung bietet eine minimalistische Benutzeroberfläche im Dark Mode mit violetten Akzenten. Alle Daten werden lokal gespeichert.
 
 ## Funktionen
 
-- **Dashboard** – Behalte deine Produktivität im Überblick.
-- **Aufgabenverwaltung** – Erstelle, erledige und lösche Aufgaben.
-- **Pomodoro-Timer** – Konzentrierte Arbeitssitzungen sowie kurze und lange Pausen.
-- **Notizen** – Erstelle, bearbeite und verwalte deine persönlichen Notizen.
-- **Statistiken** – Verfolge erledigte Aufgaben und deine gesamte Fokuszeit.
-- **Einstellungen** – Passe die Timer-Dauer und das Erscheinungsbild an.
-- **Lokale Datenbank** – Speichere Aufgaben, Notizen, Sitzungen und Einstellungen mit SQLite.
-- **Dark UI** – Minimalistisches Design mit Fokus auf Übersichtlichkeit.
+### Dashboard
+- Übersicht über die eigene Produktivität.
+- Dynamische Aufgabenstatistiken aus der SQLite-Datenbank.
+- Anzeige erledigter Aufgaben und des gesamten Fortschritts.
+- Erfassung der Fokuszeit.
+- Anzeige der zuletzt erstellten Aufgaben.
+- Aufgaben direkt im Dashboard als erledigt markieren.
+- Schnellzugriff auf den Focus Timer.
+
+### Aufgabenverwaltung
+- Aufgaben erstellen und verwalten.
+- Aufgabenbeschreibungen und Prioritäten festlegen.
+- Fälligkeitsdaten hinzufügen.
+- Zwischen offenen und erledigten Aufgaben unterscheiden.
+- Aufgaben lokal in der Datenbank speichern.
+
+### Focus Timer
+- Pomodoro-basierter Fokus-Timer.
+- Verschiedene Modi: Fokuszeit, kurze Pause und lange Pause.
+- Timer starten, pausieren, fortsetzen und zurücksetzen.
+- Fokus-Sitzungen in der Datenbank speichern.
+- Unvollständige Sitzungen beim Pausieren, Zurücksetzen, Wechseln des Modus oder Schließen der Anwendung speichern.
+- Sitzungsdauer sekundengenau erfassen.
+
+### Notizen
+- Notizen erstellen und verwalten.
+- Bestehende Notizen bearbeiten.
+- Notizen lokal in der Datenbank speichern.
+
+### Statistiken
+- Anzahl erledigter Aufgaben anzeigen.
+- Gesamte Fokuszeit erfassen.
+- Abgeschlossene Fokus-Sitzungen zählen.
+- Gesamtzahl aller gespeicherten Fokus-Sitzungen anzeigen, einschließlich unterbrochener Sitzungen.
+
+### Einstellungen
+- Anwendungseinstellungen verwalten.
+- Einstellungen dauerhaft in SQLite speichern.
 
 ## Verwendete Technologien
 
-- Python
-- CustomTkinter
-- SQLite
-- Matplotlib
-- Pillow
-- PyInstaller
+| Technologie | Verwendung |
+|---|---|
+| Python 3.11+ | Anwendungslogik |
+| CustomTkinter | Grafische Benutzeroberfläche |
+| SQLite | Lokale Datenbank |
+| Matplotlib | Datenvisualisierung |
+| Pillow | Bildverarbeitung |
+| PyInstaller | Erstellung der Windows-EXE |
 
 ## Projektstruktur
 
 ```text
 Mindrift/
-│
 ├── main.py
 ├── config.py
 ├── database.py
 ├── requirements.txt
 ├── build_exe.bat
-│
-├── data/
+├── README.md
 │
 └── ui/
     ├── __init__.py
@@ -48,77 +80,65 @@ Mindrift/
     └── settings.py
 ```
 
-## Installation und Start
+## Installation
 
-### Voraussetzungen
-
-- Python 3.11 oder neuer
-- pip
-
-### Installation
-
-1. Repository klonen:
+### 1. Repository klonen
 
 ```bash
-git clone https://github.com/DEIN-BENUTZERNAME/mindrift.git
+git clone <repository-url>
+cd Mindrift
 ```
 
-2. In das Projektverzeichnis wechseln:
+### 2. Virtuelle Umgebung erstellen
 
 ```bash
-cd mindrift
+python -m venv .venv
 ```
 
-3. Abhängigkeiten installieren:
+### 3. Virtuelle Umgebung aktivieren
 
-```bash
-py -m pip install -r requirements.txt
+**Windows PowerShell:**
+
+```powershell
+.\.venv\Scripts\Activate.ps1
 ```
 
-4. Mindrift starten:
+### 4. Abhängigkeiten installieren
 
 ```bash
-py main.py
+pip install -r requirements.txt
+```
+
+### 5. Mindrift starten
+
+```bash
+python main.py
+```
+
+## Windows-EXE erstellen
+
+Mindrift kann mit PyInstaller als eigenständige Windows-Anwendung erstellt werden.
+
+Dazu das Build-Skript ausführen:
+
+```powershell
+cmd /c build_exe.bat
+```
+
+Nach erfolgreichem Build befindet sich die ausführbare Datei unter:
+
+```text
+dist/Mindrift.exe
 ```
 
 ## Datenspeicherung
 
-Mindrift verwendet SQLite zur lokalen Speicherung deiner Daten.
+Mindrift verwendet SQLite zur lokalen Speicherung aller Anwendungsdaten.
+
+Die Datenbank wird beim Start der Anwendung automatisch initialisiert.
 
 Gespeichert werden:
-
-- Aufgaben und deren Status
-- Persönliche Notizen
+- Aufgaben
+- Notizen
 - Fokus-Sitzungen
 - Anwendungseinstellungen
-
-Alle Daten werden lokal gespeichert. Ein Online-Konto ist nicht erforderlich.
-
-## Windows-Version erstellen
-
-Mit PyInstaller kann Mindrift als eigenständige Windows-Anwendung erstellt werden.
-
-Führe dazu folgende Datei aus:
-
-```bash
-build_exe.bat
-```
-
-Die fertige EXE-Datei wird im Verzeichnis `dist/` erstellt.
-
-## Roadmap
-
-- [x] Grundstruktur der Desktop-Anwendung
-- [x] SQLite-Datenbankintegration
-- [x] Aufgabenverwaltung
-- [x] Pomodoro-Timer
-- [x] Notizenverwaltung
-- [x] Produktivitätsstatistiken
-- [x] Anwendungseinstellungen
-- [ ] Erweiterte Dashboard-Analysen
-- [ ] Verbesserte Diagramme und Visualisierungen
-- [ ] Weitere Anpassungsmöglichkeiten
-
----
-
-**Mindrift – Find your flow. Own your focus.**
