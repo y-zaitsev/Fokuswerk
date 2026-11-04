@@ -6,23 +6,61 @@ Fokuswerk ist eine minimalistische Desktop-Anwendung zur Produktivitätssteigeru
 
 ## Funktionen
 
-- **Dashboard** – Behalte deine Produktivität im Überblick.
-- **Aufgabenverwaltung** – Erstelle, erledige und lösche Aufgaben.
-- **Pomodoro-Timer** – Konzentrierte Arbeitssitzungen sowie kurze und lange Pausen.
-- **Notizen** – Erstelle, bearbeite und verwalte deine persönlichen Notizen.
-- **Statistiken** – Verfolge erledigte Aufgaben und deine gesamte Fokuszeit.
-- **Einstellungen** – Passe die Timer-Dauer und das Erscheinungsbild an.
-- **Lokale Datenbank** – Speichere Aufgaben, Notizen, Sitzungen und Einstellungen mit SQLite.
-- **Dark UI** – Minimalistisches Design mit Fokus auf Übersichtlichkeit.
+### Dashboard
+
+- Übersicht über die eigene Produktivität.
+- Dynamische Aufgabenstatistiken aus der SQLite-Datenbank.
+- Anzeige erledigter Aufgaben und des gesamten Fortschritts.
+- Erfassung der Fokuszeit.
+- Anzeige der zuletzt erstellten Aufgaben.
+- Aufgaben direkt im Dashboard als erledigt markieren.
+- Schnellzugriff auf den Focus Timer.
+
+### Aufgabenverwaltung
+
+- Aufgaben erstellen und verwalten.
+- Aufgabenbeschreibungen und Prioritäten festlegen.
+- Fälligkeitsdaten hinzufügen.
+- Zwischen offenen und erledigten Aufgaben unterscheiden.
+- Aufgaben lokal in der Datenbank speichern.
+
+### Focus Timer
+
+- Pomodoro-basierter Fokus-Timer.
+- Verschiedene Modi: Fokuszeit, kurze Pause und lange Pause.
+- Timer starten, pausieren, fortsetzen und zurücksetzen.
+- Fokus-Sitzungen in der Datenbank speichern.
+- Unvollständige Sitzungen beim Pausieren, Zurücksetzen, Wechseln des Modus oder Schließen der Anwendung speichern.
+- Sitzungsdauer sekundengenau erfassen.
+
+### Notizen
+
+- Notizen erstellen und verwalten.
+- Bestehende Notizen bearbeiten.
+- Notizen lokal in der Datenbank speichern.
+
+### Statistiken
+
+- Anzahl erledigter Aufgaben anzeigen.
+- Gesamte Fokuszeit erfassen.
+- Abgeschlossene Fokus-Sitzungen zählen.
+- Gesamtzahl aller gespeicherten Fokus-Sitzungen anzeigen, einschließlich unterbrochener Sitzungen.
+
+### Einstellungen
+
+- Anwendungseinstellungen verwalten.
+- Einstellungen dauerhaft in SQLite speichern.
 
 ## Verwendete Technologien
 
-- Python
-- CustomTkinter
-- SQLite
-- Matplotlib
-- Pillow
-- PyInstaller
+| Technologie   | Verwendung                   |
+| ------------- | ---------------------------- |
+| Python 3.11+  | Anwendungslogik              |
+| CustomTkinter | Grafische Benutzeroberfläche |
+| SQLite        | Lokale Datenbank             |
+| Matplotlib    | Datenvisualisierung          |
+| Pillow        | Bildverarbeitung             |
+| PyInstaller   | Erstellung der Windows-EXE   |
 
 ## Projektstruktur
 
@@ -53,37 +91,46 @@ Fokuswerk/
     └── settings.py
 ```
 
-## Installation und Start
+## Installation
 
-### Voraussetzungen
-
-- Python 3.11 oder neuer
-- pip
-
-### Installation
-
-1. Repository klonen:
+### 1. Repository klonen
 
 ```bash
 git clone https://github.com/y-zaitsev/fokuswerk.git
 ```
 
-2. In das Projektverzeichnis wechseln:
+### 2. Virtuelle Umgebung erstellen
 
 ```bash
 cd fokuswerk
 ```
 
-3. Abhängigkeiten installieren:
+### 4. Abhängigkeiten installieren
 
 ```bash
-py -m pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 
 4. Fokuswerk starten:
 
 ```bash
-py main.py
+python main.py
+```
+
+## Windows-EXE erstellen
+
+Mindrift kann mit PyInstaller als eigenständige Windows-Anwendung erstellt werden.
+
+Dazu das Build-Skript ausführen:
+
+```powershell
+cmd /c build_exe.bat
+```
+
+Nach erfolgreichem Build befindet sich die ausführbare Datei unter:
+
+```text
+dist/Mindrift.exe
 ```
 
 ## Datenspeicherung
@@ -92,8 +139,8 @@ Fokuswerk verwendet SQLite zur lokalen Speicherung deiner Daten.
 
 Gespeichert werden:
 
-- Aufgaben und deren Status
-- Persönliche Notizen
+- Aufgaben
+- Notizen
 - Fokus-Sitzungen
 - Anwendungseinstellungen
 
@@ -124,7 +171,7 @@ Führe dazu folgende Datei aus:
 build_exe.bat
 ```
 
-Die fertige EXE-Datei wird im Verzeichnis `dist/` erstellt. Bitte nicht in Git committen, sondern als Datei unter *Releases* auf GitHub hochladen.
+Die fertige EXE-Datei wird im Verzeichnis `dist/` erstellt. Bitte nicht in Git committen, sondern als Datei unter _Releases_ auf GitHub hochladen.
 
 ## Roadmap
 
