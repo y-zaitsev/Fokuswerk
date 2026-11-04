@@ -1,8 +1,8 @@
-# Mindrift
+# Fokuswerk
 
 **Find your flow. Own your focus.**
 
-Mindrift ist eine minimalistische Desktop-Anwendung zur Produktivitätssteigerung, entwickelt mit Python. Sie hilft dir dabei, Aufgaben zu organisieren, konzentrierte Arbeitssitzungen zu verwalten, Notizen zu speichern und deine Produktivität zu verfolgen – alles in einer übersichtlichen Oberfläche.
+Fokuswerk ist eine minimalistische Desktop-Anwendung zur Produktivitätssteigerung, entwickelt mit Python. Sie hilft dir dabei, Aufgaben zu organisieren, konzentrierte Arbeitssitzungen zu verwalten, Notizen zu speichern und deine Produktivität zu verfolgen – alles in einer übersichtlichen Oberfläche.
 
 ## Funktionen
 
@@ -27,15 +27,20 @@ Mindrift ist eine minimalistische Desktop-Anwendung zur Produktivitätssteigerun
 ## Projektstruktur
 
 ```text
-Mindrift/
+Fokuswerk/
 │
 ├── main.py
 ├── config.py
 ├── database.py
 ├── requirements.txt
 ├── build_exe.bat
+├── start_fokuswerk.bat
+├── Fokuswerk.spec
+├── test_database.py
 │
-├── data/
+├── data/          (wird automatisch angelegt, nicht in Git)
+├── tests/
+│   └── test_timer_logic.py
 │
 └── ui/
     ├── __init__.py
@@ -60,13 +65,13 @@ Mindrift/
 1. Repository klonen:
 
 ```bash
-git clone https://github.com/DEIN-BENUTZERNAME/mindrift.git
+git clone https://github.com/y-zaitsev/fokuswerk.git
 ```
 
 2. In das Projektverzeichnis wechseln:
 
 ```bash
-cd mindrift
+cd fokuswerk
 ```
 
 3. Abhängigkeiten installieren:
@@ -75,7 +80,7 @@ cd mindrift
 py -m pip install -r requirements.txt
 ```
 
-4. Mindrift starten:
+4. Fokuswerk starten:
 
 ```bash
 py main.py
@@ -83,7 +88,7 @@ py main.py
 
 ## Datenspeicherung
 
-Mindrift verwendet SQLite zur lokalen Speicherung deiner Daten.
+Fokuswerk verwendet SQLite zur lokalen Speicherung deiner Daten.
 
 Gespeichert werden:
 
@@ -94,9 +99,24 @@ Gespeichert werden:
 
 Alle Daten werden lokal gespeichert. Ein Online-Konto ist nicht erforderlich.
 
+Speicherort der Datenbank (`fokuswerk.db`):
+
+- Start über `py main.py`: Ordner `data/` im Projektverzeichnis
+- Windows-EXE: `%APPDATA%\Fokuswerk\` (bleibt auch nach einem Update der EXE erhalten)
+
+Wer vorher die Version „Mindrift“ benutzt hat: Eine vorhandene `data/mindrift.db` wird beim ersten Start automatisch übernommen.
+
+## Tests
+
+```bash
+py -m unittest -v
+```
+
+Die Tests nutzen temporäre Datenbanken und verändern deine echten Daten nicht.
+
 ## Windows-Version erstellen
 
-Mit PyInstaller kann Mindrift als eigenständige Windows-Anwendung erstellt werden.
+Mit PyInstaller kann Fokuswerk als eigenständige Windows-Anwendung erstellt werden.
 
 Führe dazu folgende Datei aus:
 
@@ -104,7 +124,7 @@ Führe dazu folgende Datei aus:
 build_exe.bat
 ```
 
-Die fertige EXE-Datei wird im Verzeichnis `dist/` erstellt.
+Die fertige EXE-Datei wird im Verzeichnis `dist/` erstellt. Bitte nicht in Git committen, sondern als Datei unter *Releases* auf GitHub hochladen.
 
 ## Roadmap
 
@@ -115,10 +135,16 @@ Die fertige EXE-Datei wird im Verzeichnis `dist/` erstellt.
 - [x] Notizenverwaltung
 - [x] Produktivitätsstatistiken
 - [x] Anwendungseinstellungen
+- [x] Timer: Seitenwechsel setzt den Countdown nicht mehr zurück, genaue Zeitmessung
+- [x] Daten bleiben in der EXE erhalten (`%APPDATA%`)
+- [ ] Aufgaben bearbeiten, Priorität, Fälligkeit, Suche und Filter
+- [ ] Timer: automatischer Wechsel, lange Pause nach 4 Sitzungen
+- [ ] Notizen: Inhalt bearbeiten, Autosave, Suche
+- [ ] Helles Theme
 - [ ] Erweiterte Dashboard-Analysen
 - [ ] Verbesserte Diagramme und Visualisierungen
 - [ ] Weitere Anpassungsmöglichkeiten
 
 ---
 
-**Mindrift – Find your flow. Own your focus.**
+**Fokuswerk – Find your flow. Own your focus.**

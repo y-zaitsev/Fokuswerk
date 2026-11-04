@@ -66,28 +66,9 @@ class StatisticsPage(ctk.CTkFrame):
         return value_label
 
     def refresh(self):
-        try:
-            completed_tasks = self.db.get_completed_task_count()
-        except AttributeError:
-            completed_tasks = len([
-                task for task in self.db.get_tasks()
-                if task["status"] == "completed"
-            ])
-
-        try:
-            focus_minutes = self.db.get_focus_total_minutes()
-        except AttributeError:
-            focus_minutes = 0
-
-        try:
-            sessions = self.db.get_focus_sessions()
-            focus_sessions = len([
-                session for session in sessions
-                if session["session_type"] == "focus"
-                and session["completed"]
-            ])
-        except (AttributeError, KeyError, TypeError):
-            focus_sessions = 0
+        completed_tasks = self.db.get_completed_task_count()
+        focus_minutes = self.db.get_focus_total_minutes()
+        focus_sessions = self.db.count_focus_sessions()
 
         hours = focus_minutes // 60
         minutes = focus_minutes % 60

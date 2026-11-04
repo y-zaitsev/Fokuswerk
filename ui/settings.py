@@ -1,6 +1,8 @@
 
 import customtkinter as ctk
 
+from config import APP_NAME
+
 
 class SettingsPage(ctk.CTkFrame):
     def __init__(self, master, db, app):
@@ -19,7 +21,7 @@ class SettingsPage(ctk.CTkFrame):
 
         ctk.CTkLabel(
             self,
-            text="Customize your Mindrift experience.",
+            text=f"Customize your {APP_NAME} experience.",
             text_color="gray"
         ).pack(anchor="w", padx=30, pady=(0, 20))
 
@@ -53,16 +55,13 @@ class SettingsPage(ctk.CTkFrame):
             font=("Arial", 18, "bold")
         ).pack(anchor="w", padx=20, pady=(15, 10))
 
-        current_theme = self.read_setting("theme", "Dark")
-
-        self.theme_option = ctk.CTkOptionMenu(
+        # Die Farben sind fest auf Dark ausgelegt - ein "Light"-Modus würde die
+        # Oberfläche zerschießen. Bis es eine echte helle Palette gibt: nur Hinweis.
+        ctk.CTkLabel(
             appearance_frame,
-            values=["Dark", "Light", "System"]
-        )
-        self.theme_option.pack(
-            anchor="w", padx=20, pady=(0, 15)
-        )
-        self.theme_option.set(current_theme)
+            text="Dark theme (a light theme is planned).",
+            text_color="gray"
+        ).pack(anchor="w", padx=20, pady=(0, 15))
 
         ctk.CTkButton(
             self,
@@ -117,11 +116,6 @@ class SettingsPage(ctk.CTkFrame):
         self.db.set_setting("focus_duration", str(focus))
         self.db.set_setting("short_break_duration", str(short))
         self.db.set_setting("long_break_duration", str(long))
-
-        theme = self.theme_option.get()
-        self.db.set_setting("theme", theme)
-
-        ctk.set_appearance_mode(theme)
 
         self.status_label.configure(
             text="Settings saved successfully!",

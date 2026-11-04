@@ -3,10 +3,14 @@ __pycache__/
 *.py[cod]
 .venv/
 
-# PyInstaller
+# PyInstaller (fertige .exe bitte über GitHub Releases verteilen, nicht committen)
 build/
 dist/
-*.spec
 
-# Database
+# Lokale Daten (Datenbank enthält persönliche Aufgaben und Notizen)
 data/
+*.db
+
+# Editor
+.vscode/
+.idea/

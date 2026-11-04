@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from config import COLORS
+from config import APP_NAME, APP_VERSION, COLORS
 
 class Sidebar(ctk.CTkFrame):
     ITEMS = ["Dashboard", "Tasks", "Focus Timer", "Statistics", "Notes", "Settings"]
@@ -11,7 +11,7 @@ class Sidebar(ctk.CTkFrame):
         self.grid_propagate(False)
 
         ctk.CTkLabel(
-            self, text="◈  FocusDesk", font=ctk.CTkFont(size=22, weight="bold"),
+            self, text=f"◈  {APP_NAME}", font=ctk.CTkFont(size=22, weight="bold"),
             text_color=COLORS["text"]
         ).pack(anchor="w", padx=22, pady=(28, 36))
 
@@ -34,7 +34,7 @@ class Sidebar(ctk.CTkFrame):
 
         ctk.CTkFrame(self, fg_color="transparent").pack(expand=True, fill="both")
         ctk.CTkLabel(
-            self, text="VERSION 0.1.0", text_color=COLORS["muted"],
+            self, text=f"VERSION {APP_VERSION}", text_color=COLORS["muted"],
             font=ctk.CTkFont(size=10)
         ).pack(anchor="w", padx=22, pady=22)
 

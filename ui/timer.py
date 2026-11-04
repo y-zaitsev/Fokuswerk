@@ -1,4 +1,9 @@
 
+import math
+import sqlite3
+import time
+from datetime import datetime
+
 import customtkinter as ctk
 
 
@@ -11,6 +16,9 @@ class TimerPage(ctk.CTkFrame):
         self.remaining = 25 * 60
         self.running = False
         self.after_id = None
+        self.started = False            # Sitzung läuft oder ist pausiert (nicht frisch)
+        self.deadline = 0.0             # time.monotonic()-Zeitpunkt des Endes
+        self.session_started_at = None  # lokaler Startzeitpunkt für die Datenbank
 
         self.durations = {
             "focus": 25,
@@ -99,11 +107,16 @@ class TimerPage(ctk.CTkFrame):
             except (TypeError, ValueError):
                 self.durations[mode] = default
 
-        self.remaining = self.durations[self.mode] * 60
+        # Laufende oder pausierte Sitzungen NICHT anfassen. Sonst setzt jeder
+        # Seitenwechsel (show_page -> on_show) den Countdown auf die volle Zeit zurück.
+        if not self.started:
+            self.remaining = self.durations[self.mode] * 60
 
     def set_mode(self, mode):
         self.pause_timer()
         self.mode = mode
+        self.started = False
+        self.session_started_at = None
         self.remaining = self.durations[mode] * 60
         self.status_label.configure(text="Ready when you are.")
         self.update_display()
@@ -111,13 +124,29 @@ class TimerPage(ctk.CTkFrame):
     def toggle_timer(self):
         if self.running:
             self.pause_timer()
-        else:
-            self.running = True
-            self.start_button.configure(text="Pause")
-            self.status_label.configure(text="Session in progress...")
-            self.tick()
+            self.start_button.configure(text="Resume")
+            self.status_label.configure(text="Paused.")
+            return
+
+        # Nach Ablauf steht remaining auf 0: neue Sitzung starten statt sofort
+        # eine weitere (leere) Sitzung zu speichern.
+        if self.remaining <= 0:
+            self.remaining = self.durations[self.mode] * 60
+
+        if not self.started:
+            self.started = True
+            self.session_started_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        self.running = True
+        self.deadline = time.monotonic() + self.remaining
+        self.start_button.configure(text="Pause")
+        self.status_label.configure(text="Session in progress...")
+        self.tick()
 
     def pause_timer(self):
+        if self.running:
+            self.remaining = max(0, math.ceil(self.deadline - time.monotonic()))
+
         self.running = False
         self.start_button.configure(text="Start")
 
@@ -127,6 +156,8 @@ class TimerPage(ctk.CTkFrame):
 
     def reset_timer(self):
         self.pause_timer()
+        self.started = False
+        self.session_started_at = None
         self.remaining = self.durations[self.mode] * 60
         self.status_label.configure(text="Timer reset.")
         self.update_display()
@@ -135,14 +166,19 @@ class TimerPage(ctk.CTkFrame):
         if not self.running:
             return
 
+        # Restzeit aus der Systemuhr berechnen statt "remaining -= 1":
+        # after(1000) kommt immer etwas zu spät und der Fehler summiert sich.
+        remaining = max(0, math.ceil(self.deadline - time.monotonic()))
+
+        if remaining != self.remaining:
+            self.remaining = remaining
+            self.update_display()
+
         if self.remaining <= 0:
             self.finish_session()
             return
 
-        self.remaining -= 1
-        self.update_display()
-
-        self.after_id = self.after(1000, self.tick)
+        self.after_id = self.after(200, self.tick)
 
     def finish_session(self):
         self.pause_timer()
@@ -153,14 +189,19 @@ class TimerPage(ctk.CTkFrame):
             self.db.add_focus_session(
                 minutes,
                 session_type=self.mode,
-                completed=True
+                completed=True,
+                started_at=self.session_started_at,
             )
-        except TypeError:
-            self.db.add_focus_session(minutes, self.mode)
+            message = "Session completed!"
+        except sqlite3.Error:
+            message = "Session completed, but it could not be saved."
 
+        self.started = False
+        self.session_started_at = None
         self.remaining = 0
         self.update_display()
-        self.status_label.configure(text="Session completed!")
+        self.status_label.configure(text=message)
+        self.bell()
 
     def update_display(self):
         minutes = self.remaining // 60

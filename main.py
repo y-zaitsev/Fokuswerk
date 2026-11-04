@@ -1,7 +1,9 @@
 
 import customtkinter as ctk
 
-from config import APP_NAME, COLORS
+from tkinter import messagebox
+
+from config import APP_NAME, COLORS, MIN_WINDOW_SIZE, WINDOW_SIZE
 from database import Database
 
 from ui.sidebar import Sidebar
@@ -13,16 +15,20 @@ from ui.statistics import StatisticsPage
 from ui.settings import SettingsPage
 
 
-class MindriftApp(ctk.CTk):
+class FokuswerkApp(ctk.CTk):
 
     def __init__(self):
+        # Die Oberfläche ist komplett dunkel gestaltet. Ohne diese Zeile folgt
+        # CustomTkinter dem Windows-Theme und Standard-Widgets werden hell.
+        ctk.set_appearance_mode("dark")
+
         super().__init__()
 
         self.db = Database()
 
         self.title(APP_NAME)
-        self.geometry("1200x750")
-        self.minsize(950, 600)
+        self.geometry(WINDOW_SIZE)
+        self.minsize(*MIN_WINDOW_SIZE)
 
         self.configure(fg_color=COLORS["background"])
 
@@ -109,10 +115,10 @@ class MindriftApp(ctk.CTk):
             sticky="nsew"
         )
 
+        # on_show() lädt die Seite bereits neu - nicht zusätzlich refresh() aufrufen.
         if hasattr(page, "on_show"):
             page.on_show()
-
-        if hasattr(page, "refresh"):
+        elif hasattr(page, "refresh"):
             page.refresh()
 
         self.sidebar.set_active(page_name)
@@ -120,6 +126,10 @@ class MindriftApp(ctk.CTk):
     def on_close(self):
 
         timer = self.pages.get("Focus Timer")
+
+        if timer and timer.running:
+            if not messagebox.askyesno(APP_NAME, "The timer is still running. Quit anyway?"):
+                return
 
         if timer and timer.after_id:
             timer.after_cancel(timer.after_id)
@@ -129,5 +139,5 @@ class MindriftApp(ctk.CTk):
 
 if __name__ == "__main__":
 
-    app = MindriftApp()
+    app = FokuswerkApp()
     app.mainloop()

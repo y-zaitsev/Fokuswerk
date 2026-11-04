@@ -20,24 +20,24 @@ class Dashboard(ctk.CTkFrame):
         self.grid_columnconfigure((0, 1, 2, 3), weight=1, uniform="cards")
         self.grid_rowconfigure(3, weight=1)
 
-        today = datetime.now().strftime("%A, %B %d")
-
-        ctk.CTkLabel(
+        self.greeting_label = ctk.CTkLabel(
             self,
-            text="Good afternoon 👋",
+            text="",
             text_color=COLORS["text"],
             font=ctk.CTkFont(size=30, weight="bold")
-        ).grid(
+        )
+        self.greeting_label.grid(
             row=0, column=0, columnspan=4,
             sticky="w", padx=34, pady=(34, 2)
         )
 
-        ctk.CTkLabel(
+        self.date_label = ctk.CTkLabel(
             self,
-            text=f"Make today count.  •  {today}",
+            text="",
             text_color=COLORS["muted"],
             font=ctk.CTkFont(size=13)
-        ).grid(
+        )
+        self.date_label.grid(
             row=1, column=0, columnspan=4,
             sticky="w", padx=36, pady=(0, 26)
         )
@@ -113,12 +113,13 @@ class Dashboard(ctk.CTkFrame):
             font=ctk.CTkFont(size=10, weight="bold")
         ).pack(pady=(24, 4))
 
-        ctk.CTkLabel(
+        self.focus_time_label = ctk.CTkLabel(
             focus_card,
             text="25:00",
             text_color=COLORS["text"],
             font=ctk.CTkFont(size=38, weight="bold")
-        ).pack(pady=4)
+        )
+        self.focus_time_label.pack(pady=4)
 
         ctk.CTkLabel(
             focus_card,
@@ -178,7 +179,33 @@ class Dashboard(ctk.CTkFrame):
 
         self.metric_values[label] = value_label
 
+    def _update_header(self):
+        """Begrüßung, Datum und Fokus-Dauer aus Uhrzeit/Einstellungen (nicht fest verdrahtet)."""
+        now = datetime.now()
+
+        if now.hour < 12:
+            greeting = "Good morning"
+        elif now.hour < 18:
+            greeting = "Good afternoon"
+        else:
+            greeting = "Good evening"
+
+        self.greeting_label.configure(text=f"{greeting} 👋")
+        self.date_label.configure(
+            text=f"Make today count.  •  {now.strftime('%A, %B %d')}"
+        )
+
+        minutes = 25
+        if self.db is not None:
+            try:
+                minutes = max(1, int(self.db.get_setting("focus_duration") or 25))
+            except ValueError:
+                pass
+        self.focus_time_label.configure(text=f"{minutes:02d}:00")
+
     def refresh(self):
+        self._update_header()
+
         if self.db is None:
             return
 
@@ -194,15 +221,7 @@ class Dashboard(ctk.CTkFrame):
 
         today = datetime.now().strftime("%Y-%m-%d")
 
-        sessions = self.db.get_focus_sessions()
-
-        focus_minutes = sum(
-            session["duration_minutes"]
-            for session in sessions
-            if session["session_type"] == "focus"
-            and session["completed"]
-            and session["started_at"].startswith(today)
-        )
+        focus_minutes = self.db.get_focus_seconds_for_day(today) // 60
 
         if focus_minutes >= 60:
             focus_text = f"{focus_minutes // 60}h {focus_minutes % 60}m"
