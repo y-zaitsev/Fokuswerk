@@ -190,7 +190,7 @@ class Dashboard(ctk.CTkFrame):
         else:
             greeting = "Good evening"
 
-        self.greeting_label.configure(text=f"{greeting} 👋")
+        self.greeting_label.configure(text=f"{greeting} ")
         self.date_label.configure(
             text=f"Make today count.  •  {now.strftime('%A, %B %d')}"
         )
