@@ -119,7 +119,7 @@ python main.py
 
 ## Windows-EXE erstellen
 
-Mindrift kann mit PyInstaller als eigenständige Windows-Anwendung erstellt werden.
+Fokuswerk kann mit PyInstaller als eigenständige Windows-Anwendung erstellt werden.
 
 Dazu das Build-Skript ausführen:
 
@@ -130,7 +130,7 @@ cmd /c build_exe.bat
 Nach erfolgreichem Build befindet sich die ausführbare Datei unter:
 
 ```text
-dist/Mindrift.exe
+dist/Fokuswerk.exe
 ```
 
 ## Datenspeicherung
